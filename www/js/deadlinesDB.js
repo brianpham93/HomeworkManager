@@ -2,6 +2,10 @@
 var id = "";
 var db = null;
 
+
+document.addEventListener('deviceready', function () {
+	window.plugin.notification.local.add({ message: 'deviceready' });
+},false);
 function populateDB(tx) {
 	
 	 tx.executeSql('CREATE TABLE IF NOT EXISTS deadlines (id varchar(10) primary key, description varchar(500), class varchar(50), duedate date, duetime time, type varchar(50), additionalInfo varchar(200), finished varchar(10))');
@@ -629,7 +633,6 @@ function saveClassToDB(){
 }
 
 function insertClassToDB(dbId,dbName,dbLocation,dbDate, dbTime, dbTeacher, dbEmail, dbPhone) {
-	alert('before insert');
 	db.transaction(function(tx){
 		tx.executeSql('INSERT INTO classes (id, name, location, classdate, classtime, teacher, email, phone) VALUES (?,?,?,?,?,?,?,?)',[dbId,dbName,dbLocation,dbDate, dbTime, dbTeacher, dbEmail, dbPhone],insertClassSuccessCB, errorCB);
 		//alert(tx);

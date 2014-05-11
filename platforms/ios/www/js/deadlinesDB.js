@@ -2,9 +2,9 @@
 var id = "";
 var db = null;
 
+
 document.addEventListener('deviceready', function () {
-	alert('on deviceready');
-	window.plugin.notification.local.add({ message: 'Great app!' });
+	alert("deviceready");
 },false);
 function populateDB(tx) {
 	
@@ -31,6 +31,7 @@ function getAllDeadlines_success(tx, results){
 	var tmpDueTime = '00:00';
 	for (var i=0; i<len; i++){
 		var allDeadline = results.rows.item(i);
+		//window.plugin.notification.local.add({ message: 'Great app!' });
 		//compare with current time
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
 		if ( result == "true"){
