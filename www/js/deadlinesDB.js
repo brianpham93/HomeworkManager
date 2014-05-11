@@ -4,7 +4,7 @@ var db = null;
 
 
 document.addEventListener('deviceready', function () {
-	window.plugin.notification.local.add({ message: 'deviceready' });
+	window.plugin.notification.local.add({ message: 'deviceready' });	
 },false);
 function populateDB(tx) {
 	
@@ -31,7 +31,7 @@ function getAllDeadlines_success(tx, results){
 	var tmpDueTime = '00:00';
 	for (var i=0; i<len; i++){
 		var allDeadline = results.rows.item(i);
-		//window.plugin.notification.local.add({ message: 'Great app!' });
+		
 		//compare with current time
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
 		if ( result == "true"){
@@ -40,9 +40,26 @@ function getAllDeadlines_success(tx, results){
 			if (result2 == "true") {
 				$('#allList').append('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
 			}
-			else $('#allList').prepend('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
+			else 
+				$('#allList').prepend('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
 			tmpDueDate = allDeadline.duedate;
 			tmpDueTime = allDeadline.duetime;
+			var deadlineDatePart = allDeadline.duedate.split('-');
+			var deadlineTimePart = allDeadline.duetime.split(':');
+
+			newDate = new Date(deadlineDatePart[0], deadlineDatePart[1], deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);
+			//alert(newDate);
+			var notiDate = new Date(newDate - 86400*1000);
+			//alert(notiDate);
+			window.plugin.notification.local.add({
+				id : ''+allDeadline.id+'',			  
+			    message: 'Dont forget to complete '+allDeadline.description+'',
+			    badge: 0,
+			    date: notiDate
+			});
+			window.plugin.notification.local.isScheduled(allDeadline.id, function (isScheduled) {
+    			alert('Notification with ID ' + allDeadline.id + ' is scheduled: ' + isScheduled);
+			}, scope);
 		}
 	}
 	$("#allList").listview().listview('refresh');
