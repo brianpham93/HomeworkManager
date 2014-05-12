@@ -32,26 +32,24 @@ function getAllDeadlines_success(tx, results){
 	for (var i=0; i<len; i++){
 		var allDeadline = results.rows.item(i);
 		
+		var deadlineDatePart = allDeadline.duedate.split('-');
+		var deadlineTimePart = allDeadline.duetime.split(':');
+		var newDate = new Date(deadlineDatePart[0], deadlineDatePart[1] - 1 , deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);
+			//alert("new Date" + newDate);
+		var notiDate = new Date(newDate - 86400*1000);
 		//compare with current time
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
 		if ( result == "true"){			
 			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
-			// window.plugin.notification.local.add({
-			// 	id : getRandomInt(0,99999), 
-			//     message: 'Dont forget to complete: '+allDeadline.description+'',
-			//     badge: 0,
-			//     date: notiDate
-			// });
+			window.plugin.notification.local.add({
+				id : getRandomInt(0,99999), 
+			    message: 'Dont forget to complete: '+allDeadline.description+'',
+			    badge: 0,
+			    date: notiDate
+			});
 		}
 	}
-	$(function(){
-	    var elems = $('#allList').children('li').remove();
-	    elems.sort(function(a,b){
-	    	//alert(new Date(a.id) < new Date(b.id));
-	        return (new Date(a.id) > new Date(b.id));
-	    });
-	    $('#allList').append(elems);
-	});
+	
 	$("#allList").listview().listview('refresh');
 	$('#allList').children().each(function(){
                 var anchor = $(this).find('a');
