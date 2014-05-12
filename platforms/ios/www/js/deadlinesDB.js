@@ -40,26 +40,26 @@ function getAllDeadlines_success(tx, results){
 			if (result2 == "true") {
 				$('#allList').append('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
 			}
-			else 
-				$('#allList').prepend('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
+			else {
+				$('#allList').prepend('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');	
+			}
+			
 			tmpDueDate = allDeadline.duedate;
-			tmpDueTime = allDeadline.duetime;
+			tmpDueTime = allDeadline.duetime;			
 			var deadlineDatePart = allDeadline.duedate.split('-');
 			var deadlineTimePart = allDeadline.duetime.split(':');
 
-			newDate = new Date(deadlineDatePart[0], deadlineDatePart[1], deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);
-			//alert(newDate);
+			var newDate = new Date(deadlineDatePart[0], deadlineDatePart[1] - 1 , deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);
+			//alert("new Date" + newDate);
 			var notiDate = new Date(newDate - 86400*1000);
-			//alert(notiDate);
+			//alert("noti date "+notiDate);
 			window.plugin.notification.local.add({
-				id : ''+allDeadline.id+'',			  
-			    message: 'Dont forget to complete '+allDeadline.description+'',
+				id : getRandomInt(0,99999), 
+			    message: 'Dont forget to complete: '+allDeadline.description+'',
 			    badge: 0,
 			    date: notiDate
 			});
-			window.plugin.notification.local.isScheduled(allDeadline.id, function (isScheduled) {
-    			alert('Notification with ID ' + allDeadline.id + ' is scheduled: ' + isScheduled);
-			}, scope);
+			
 		}
 	}
 	$("#allList").listview().listview('refresh');
@@ -472,10 +472,10 @@ function isLate(deadlineDate, deadlineTime){
 	var date = now.getDate();
 	var hour = now.getHours();
 	var minute = now.getMinutes();
-	
+	//lert("month " + month);
 	var parts = deadlineDate.split('-');
 	var time = deadlineTime.split(':');
-	
+	//alert(parts[1]);
 	if ( parts[0] < year ){// previous year
 		return false;
 	} else if ( ( parts[0] == year ) && ( parts[1] < month)){ // previous month
@@ -489,6 +489,10 @@ function isLate(deadlineDate, deadlineTime){
 	} else {
 		return true;
 	}	
+}
+
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function isLaterThan(firstDeadlineDate, firstDeadlineTime, secondDeadlineDate, secondDeadlineTime){
