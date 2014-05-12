@@ -61,10 +61,12 @@ $(document).one('pagebeforecreate', function () {
 						<li><a href="#test" data-ajax="false">Test</a></li>
 					</ul>
 				</div>
-             <!-- tab bar -->
-             <!-- tab content -->
+                <!-- tab bar -->
+                
+                <!-- tab content -->
 				<div id="all" class="ui-body-d ui-content">
 					<ul id="allList" data-role="listview" data-inset="true">
+                        
 						<!--List will go here-->
 					</ul>
 				</div>
@@ -375,7 +377,18 @@ $("#deadlineList").on("pagebeforeshow", function(e, data){
             db.transaction(populateDB, errorCB, successCB);
     
             db.transaction(getDeadlinesList, errorCB);
-        });
+            $(function(){
+                var elems = $('#allList').children('li').remove();
+                elems.sort(function(a,b){
+                    //alert(new Date(a.id) < new Date(b.id));
+                    return (new Date(a.id) > new Date(b.id));
+                });
+
+                $('#allList').append(elems);
+            });
+            $("#allList").listview().listview('refresh');
+
+});
 
 $("#DeadlineDetail").on("pagebeforeshow", function(e, data){
            db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
@@ -415,7 +428,7 @@ $("#classlistpage").on("pagebeforeshow", function(e, data){
 
 </script>
 <script type="text/javascript" src ="cordova.js"></script>
-<script type="text/javascript" src ="js/login-notification.js"></script>
+<script type="text/javascript" src ="js/local-notification.js"></script>
 </body>
 
 </html>

@@ -34,34 +34,24 @@ function getAllDeadlines_success(tx, results){
 		
 		//compare with current time
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
-		if ( result == "true"){
-			var result2 = isLaterThan(allDeadline.duedate, allDeadline.duetime, tmpDueDate, tmpDueTime).toString();
-			//alert(result2);
-			if (result2 == "true") {
-				$('#allList').append('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
-			}
-			else {
-				$('#allList').prepend('<li><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');	
-			}
-			
-			tmpDueDate = allDeadline.duedate;
-			tmpDueTime = allDeadline.duetime;			
-			var deadlineDatePart = allDeadline.duedate.split('-');
-			var deadlineTimePart = allDeadline.duetime.split(':');
-
-			var newDate = new Date(deadlineDatePart[0], deadlineDatePart[1] - 1 , deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);
-			//alert("new Date" + newDate);
-			var notiDate = new Date(newDate - 86400*1000);
-			//alert("noti date "+notiDate);
-			window.plugin.notification.local.add({
-				id : getRandomInt(0,99999), 
-			    message: 'Dont forget to complete: '+allDeadline.description+'',
-			    badge: 0,
-			    date: notiDate
-			});
-			
+		if ( result == "true"){			
+			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
+			// window.plugin.notification.local.add({
+			// 	id : getRandomInt(0,99999), 
+			//     message: 'Dont forget to complete: '+allDeadline.description+'',
+			//     badge: 0,
+			//     date: notiDate
+			// });
 		}
 	}
+	$(function(){
+	    var elems = $('#allList').children('li').remove();
+	    elems.sort(function(a,b){
+	    	//alert(new Date(a.id) < new Date(b.id));
+	        return (new Date(a.id) > new Date(b.id));
+	    });
+	    $('#allList').append(elems);
+	});
 	$("#allList").listview().listview('refresh');
 	$('#allList').children().each(function(){
                 var anchor = $(this).find('a');
@@ -90,17 +80,18 @@ function getHomeworkDeadlines_success(tx, results){
 		////alert('result: ' + result);
 		if ( result == "true" ){
 			////alert('append');	
-			var result2 = isLaterThan(homeworkDeadline.duedate, homeworkDeadline.duetime, tmpDueDate, tmpDueTime).toString();
-			if (result2 == "true"){
-				$('#homeworkList').append('<li><a href="#DeadlineDetail" id = "'+homeworkDeadline.id+'" data-transition = "slide">'+ homeworkDeadline.class + '<br>' + homeworkDeadline.duedate+'    '+ homeworkDeadline.duetime+'<br>'+ homeworkDeadline.description +'</a></li>');
-
-			}
-			else $('#homeworkList').prepend('<li><a href="#DeadlineDetail" id = "'+homeworkDeadline.id+'" data-transition = "slide">'+ homeworkDeadline.class + '<br>' + homeworkDeadline.duedate+'    '+ homeworkDeadline.duetime+'<br>'+ homeworkDeadline.description +'</a></li>');			
-			tmpDueDate = homeworkDeadline.duedate;
-			tmpDueTime = homeworkDeadline.duetime;
+			$('#homeworkList').append('<li id = "'+homeworkDeadline.duedate+' '+homeworkDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+homeworkDeadline.id+'" data-transition = "slide">'+ homeworkDeadline.class + '<br>' + homeworkDeadline.duedate+'    '+ homeworkDeadline.duetime+'<br>'+ homeworkDeadline.description +'</a></li>');
 		} 
 		
 	}
+	$(function(){
+	    var elems = $('#homeworkList').children('li').remove();
+	    elems.sort(function(a,b){
+	    	//alert(new Date(a.id) < new Date(b.id));
+	        return (new Date(a.id) > new Date(b.id));
+	    });
+	    $('#homeworkList').append(elems);
+	});
 	$("#homeworkList").listview().listview('refresh');
 	$('#homeworkList').children().each(function(){
                 var anchor = $(this).find('a');
@@ -126,15 +117,17 @@ function getTestDeadlines_success(tx, results){
 		var testDeadline = results.rows.item(i);
 		var result = isLate(testDeadline.duedate, testDeadline.duetime).toString();
 		if ( result == "true"){
-			var result2 = isLaterThan(testDeadline.duedate, testDeadline.duetime, tmpDueDate, tmpDueTime).toString();
-			if (result2 == "true") {
-				$('#testList').append('<li><a href="#DeadlineDetail" id = "'+testDeadline.id+'" data-transition = "slide">'+ testDeadline.class + '<br>' + testDeadline.duedate+'    '+ testDeadline.duetime+'<br>'+ testDeadline.description +'</a></li>');
-			} else $('#testList').prepend('<li><a href="#DeadlineDetail" id = "'+testDeadline.id+'" data-transition = "slide">'+ testDeadline.class + '<br>' + testDeadline.duedate+'    '+ testDeadline.duetime+'<br>'+ testDeadline.description +'</a></li>');
-			tmpDueTime = testDeadline.duetime;
-			tmpDueDate = testDeadline.duedate;				
-		}
-				
+			$('#testList').append('<li id = "'+testDeadline.duedate+' '+testDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+testDeadline.id+'" data-transition = "slide">'+ testDeadline.class + '<br>' + testDeadline.duedate+'    '+ testDeadline.duetime+'<br>'+ testDeadline.description +'</a></li>');
+		}				
 	}
+	$(function(){
+	    var elems = $('#testList').children('li').remove();
+	    elems.sort(function(a,b){
+	    	//alert(new Date(a.id) < new Date(b.id));
+	        return (new Date(a.id) > new Date(b.id));
+	    });
+	    $('#testList').append(elems);
+	});
 	$("#testList").listview().listview('refresh');
 	$('#testList').children().each(function(){
                 var anchor = $(this).find('a');
@@ -496,7 +489,7 @@ function getRandomInt (min, max) {
 }
 
 function isLaterThan(firstDeadlineDate, firstDeadlineTime, secondDeadlineDate, secondDeadlineTime){
-	
+	//alert ("this deadline " + firstDeadlineDate + "  " + firstDeadlineTime + " is later than previous deadline " + secondDeadlineDate + "  " + secondDeadlineTime);
 	var frstDeadlinePart = firstDeadlineDate.split('-');
 	var frstDeadlineTime = firstDeadlineTime.split(':');
 
