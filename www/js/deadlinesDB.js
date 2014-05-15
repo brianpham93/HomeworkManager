@@ -43,12 +43,12 @@ function getAllDeadlines_success(tx, results){
 			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+
 				allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ 
 				allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
-			// window.plugin.notification.local.add({
-			// 	id : getRandomInt(0,99999), 
-			//     message: 'Dont forget to complete: '+allDeadline.description+'',
-			//     badge: 0,
-			//     date: notiDate
-			// });
+				//alert(allDeadline.id);
+				window.plugin.notification.local.add({
+					id : parseInt(allDeadline.id), 
+				    message: 'Dont forget to complete: '+allDeadline.description+''
+				    //date: notiDate
+				});
 		}
 	}
     var elems = $('#allList').children('li').remove();
@@ -785,7 +785,7 @@ function updateDeadlineToDB(description,classDeadline,duedate, duetime, type, ad
 }
 
 function saveDeadlineToDB(){
-	var dbId = randomString(5);
+	var dbId = getRandomInt(0,99999);
 	//alert(dbId);
 	var dbDescription = document.getElementById("shortDescriptionAddNew").value;
 	//alert(dbDescription);
