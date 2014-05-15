@@ -846,11 +846,11 @@ function insertSuccessCB(){
 function deleteSuccessCB(tx){
 	//alert("Deleted successfully");
 	alert(id);
-	window.plugin.notification.local.cancel(parseInt(id), function () {
-    // The notification has been canceled
-	}, window.location.hash ="#deadlineList");
+	// window.plugin.notification.local.cancel(parseInt(id), function () {
+ //    // The notification has been canceled
+	// }, window.location.hash ="#deadlineList");
 	// window.plugin.notification.local.cancel(id);
-	// window.location.hash ="#deadlineList";
+	window.location.hash ="#deadlineList";
 }
 // External func
 function getParameterByName(name) {
