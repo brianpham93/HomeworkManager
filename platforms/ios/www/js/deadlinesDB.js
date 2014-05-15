@@ -34,23 +34,68 @@ function getAllDeadlines_success(tx, results){
 		
 		var deadlineDatePart = allDeadline.duedate.split('-');
 		var deadlineTimePart = allDeadline.duetime.split(':');
-		var newDate = new Date(deadlineDatePart[0], deadlineDatePart[1] - 1 , deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);
-			//alert("new Date" + newDate);
+		
+		var newDate = new Date(deadlineDatePart[0], deadlineDatePart[1] - 1 , deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);			
 		var notiDate = new Date(newDate - 86400*1000);
 		//compare with current time
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
 		if ( result == "true"){			
 			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
-			window.plugin.notification.local.add({
-				id : getRandomInt(0,99999), 
-			    message: 'Dont forget to complete: '+allDeadline.description+'',
-			    badge: 0,
-			    date: notiDate
-			});
+			// window.plugin.notification.local.add({
+			// 	id : getRandomInt(0,99999), 
+			//     message: 'Dont forget to complete: '+allDeadline.description+'',
+			//     badge: 0,
+			//     date: notiDate
+			// });
 		}
 	}
+    var elems = $('#allList').children('li').remove();
+
+    elems.sort(function(a,b){
+    	try{
+    		var aDateTimePart = a.id.split(" ");
+
+			var aDatePart = aDateTimePart[0].split("-");
+			var aTimePart = aDateTimePart[1].split(":");
+			// alert(aTimePart);
+
+			var aYear = parseInt(aDatePart[0]);
+			var aMonth = parseInt(aDatePart[1]) - 1;
+			var aDay = parseInt(aDatePart[2]);
+			var aHour = parseInt(aTimePart[0]);
+			var aMinute = parseInt(aTimePart[1]);
+			
+			var aDate = new Date(aYear,aMonth,aDay,aHour,aMinute,0,0);
+			
+			
+			var bDateTimePart = b.id.split(" ");
+			var bDatePart = bDateTimePart[0].split("-");
+			var bTimePart = bDateTimePart[1].split(":");
+			
+			var bYear = parseInt(bDatePart[0]);
+			var bMonth = parseInt(bDatePart[1]) - 1;
+			var bDay = parseInt(bDatePart[2]);
+			var bHour = parseInt(bTimePart[0]);
+			var bMinute = parseInt(bTimePart[1]);
+			
+			var bDate = new Date(bYear,bMonth,bDay,bHour,bMinute,0,0);
+			//alert(aDate + " is later than  " + bDate + " ? ");
+			//alert(aDate > bDate);
+			//alert(aDate > bDate);
+			if (aDate > bDate) return 1;
+  			if (aDate < bDate) return -1;
+  			return 0;
+			//return  aDate > bDate;
+
+    	} catch(err){
+    		alert(err.message);
+    	}
+    });
+
+    $('#allList').append(elems);
+    
+    $("#allList").listview().listview('refresh');
 	
-	$("#allList").listview().listview('refresh');
 	$('#allList').children().each(function(){
                 var anchor = $(this).find('a');
                 if(anchor){
@@ -82,14 +127,7 @@ function getHomeworkDeadlines_success(tx, results){
 		} 
 		
 	}
-	$(function(){
-	    var elems = $('#homeworkList').children('li').remove();
-	    elems.sort(function(a,b){
-	    	//alert(new Date(a.id) < new Date(b.id));
-	        return (new Date(a.id) > new Date(b.id));
-	    });
-	    $('#homeworkList').append(elems);
-	});
+	
 	$("#homeworkList").listview().listview('refresh');
 	$('#homeworkList').children().each(function(){
                 var anchor = $(this).find('a');
