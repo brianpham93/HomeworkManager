@@ -127,6 +127,50 @@ function getHomeworkDeadlines_success(tx, results){
 		} 
 		
 	}
+	var elems = $('#homeworkList').children('li').remove();
+
+    elems.sort(function(a,b){
+    	try{
+    		var aDateTimePart = a.id.split(" ");
+
+			var aDatePart = aDateTimePart[0].split("-");
+			var aTimePart = aDateTimePart[1].split(":");
+			// alert(aTimePart);
+
+			var aYear = parseInt(aDatePart[0]);
+			var aMonth = parseInt(aDatePart[1]) - 1;
+			var aDay = parseInt(aDatePart[2]);
+			var aHour = parseInt(aTimePart[0]);
+			var aMinute = parseInt(aTimePart[1]);
+			
+			var aDate = new Date(aYear,aMonth,aDay,aHour,aMinute,0,0);
+			
+			
+			var bDateTimePart = b.id.split(" ");
+			var bDatePart = bDateTimePart[0].split("-");
+			var bTimePart = bDateTimePart[1].split(":");
+			
+			var bYear = parseInt(bDatePart[0]);
+			var bMonth = parseInt(bDatePart[1]) - 1;
+			var bDay = parseInt(bDatePart[2]);
+			var bHour = parseInt(bTimePart[0]);
+			var bMinute = parseInt(bTimePart[1]);
+			
+			var bDate = new Date(bYear,bMonth,bDay,bHour,bMinute,0,0);
+			//alert(aDate + " is later than  " + bDate + " ? ");
+			//alert(aDate > bDate);
+			//alert(aDate > bDate);
+			if (aDate > bDate) return 1;
+  			if (aDate < bDate) return -1;
+  			return 0;
+			//return  aDate > bDate;
+
+    	} catch(err){
+    		alert(err.message);
+    	}
+    });
+
+    $('#homeworkList').append(elems);
 	
 	$("#homeworkList").listview().listview('refresh');
 	$('#homeworkList').children().each(function(){
@@ -164,6 +208,50 @@ function getTestDeadlines_success(tx, results){
 	    });
 	    $('#testList').append(elems);
 	});
+	var elems = $('#testList').children('li').remove();
+
+    elems.sort(function(a,b){
+    	try{
+    		var aDateTimePart = a.id.split(" ");
+
+			var aDatePart = aDateTimePart[0].split("-");
+			var aTimePart = aDateTimePart[1].split(":");
+			// alert(aTimePart);
+
+			var aYear = parseInt(aDatePart[0]);
+			var aMonth = parseInt(aDatePart[1]) - 1;
+			var aDay = parseInt(aDatePart[2]);
+			var aHour = parseInt(aTimePart[0]);
+			var aMinute = parseInt(aTimePart[1]);
+			
+			var aDate = new Date(aYear,aMonth,aDay,aHour,aMinute,0,0);
+			
+			
+			var bDateTimePart = b.id.split(" ");
+			var bDatePart = bDateTimePart[0].split("-");
+			var bTimePart = bDateTimePart[1].split(":");
+			
+			var bYear = parseInt(bDatePart[0]);
+			var bMonth = parseInt(bDatePart[1]) - 1;
+			var bDay = parseInt(bDatePart[2]);
+			var bHour = parseInt(bTimePart[0]);
+			var bMinute = parseInt(bTimePart[1]);
+			
+			var bDate = new Date(bYear,bMonth,bDay,bHour,bMinute,0,0);
+			//alert(aDate + " is later than  " + bDate + " ? ");
+			//alert(aDate > bDate);
+			//alert(aDate > bDate);
+			if (aDate > bDate) return 1;
+  			if (aDate < bDate) return -1;
+  			return 0;
+			//return  aDate > bDate;
+
+    	} catch(err){
+    		alert(err.message);
+    	}
+    });
+
+    $('#testList').append(elems);
 	$("#testList").listview().listview('refresh');
 	$('#testList').children().each(function(){
                 var anchor = $(this).find('a');
