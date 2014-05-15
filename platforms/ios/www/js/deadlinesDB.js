@@ -46,8 +46,8 @@ function getAllDeadlines_success(tx, results){
 				//alert(allDeadline.id);
 				window.plugin.notification.local.add({
 					id : parseInt(allDeadline.id), 
-				    message: 'Dont forget to complete: '+allDeadline.description+''
-				    //date: notiDate
+				    message: 'Dont forget to complete: '+allDeadline.description+'',
+				    date: notiDate
 				});
 		}
 	}

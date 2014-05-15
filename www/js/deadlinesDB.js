@@ -43,11 +43,11 @@ function getAllDeadlines_success(tx, results){
 			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+
 				allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ 
 				allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
-				//alert(allDeadline.id);
+				alert(allDeadline.id);
 				window.plugin.notification.local.add({
 					id : parseInt(allDeadline.id), 
-				    message: 'Dont forget to complete: '+allDeadline.description+''
-				    //date: notiDate
+				    message: 'Dont forget to complete: '+allDeadline.description+'',
+				    date: notiDate
 				});
 		}
 	}
