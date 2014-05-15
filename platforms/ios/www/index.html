@@ -377,6 +377,16 @@ $("#deadlineList").on("pagebeforeshow", function(e, data){
             db.transaction(populateDB, errorCB, successCB);
     
             db.transaction(getDeadlinesList, errorCB);
+            // $(function(){
+            //     var elems = $('#allList').children('li').remove();
+            //     elems.sort(function(a,b){
+            //         //alert(new Date(a.id) < new Date(b.id));
+            //         alert (new Date(a.id) > new Date(b.id));
+            //     });
+
+            //     $('#allList').append(elems);
+            // });
+            // $("#allList").listview().listview('refresh');
 });
 
 $("#DeadlineDetail").on("pagebeforeshow", function(e, data){
@@ -418,9 +428,6 @@ $("#classlistpage").on("pagebeforeshow", function(e, data){
 </script>
 <script type="text/javascript" src ="cordova.js"></script>
 <script type="text/javascript" src ="js/local-notification.js"></script>
-<script type="text/javascript"> 
-    window.plugin.notification.local.add({ message: 'GAAAAA' });
-</script>
 </body>
 
 </html>
