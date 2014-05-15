@@ -46,8 +46,8 @@ function getAllDeadlines_success(tx, results){
 				//alert(allDeadline.id);
 				window.plugin.notification.local.add({
 					id : parseInt(allDeadline.id), 
-				    message: 'Dont forget to complete: '+allDeadline.description+''
-				    //date: notiDate
+				    message: 'Dont forget to complete: '+allDeadline.description+'',
+				    date: notiDate
 				});
 		}
 	}
@@ -825,6 +825,7 @@ function insertDeadlineToDB(dbId,dbDescription,dbClass,dbDueDate, dbDueTime, dbT
 function deleteDeadline(){
 	db.transaction(function(tx){
 		tx.executeSql("DELETE FROM deadlines WHERE id = ? ",[id], deleteSuccessCB, errorCB);
+		
 	});
 }
 // CALL BACK //
@@ -845,6 +846,7 @@ function insertSuccessCB(){
 
 function deleteSuccessCB(tx){
 	//alert("Deleted successfully");
+	//window.plugin.notification.local.cancel(id);
 	window.location.hash ="#deadlineList";
 }
 // External func
