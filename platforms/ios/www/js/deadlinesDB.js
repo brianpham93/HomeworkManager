@@ -103,6 +103,7 @@ function getAllDeadlines_success(tx, results) {
             alert(err.message);
         }
     });
+<<<<<<< HEAD
 
     $('#allList')
         .append(elems);
@@ -311,6 +312,77 @@ function getTestDeadlines_success(tx, results) {
                 });
             }
         });
+=======
+	
+}
+
+
+function getHomeworkDeadlines_success(tx, results){
+	
+	////alert('get homework deadlines');
+	var len = results.rows.length;
+	$('#homeworkList').empty();
+	var tmpDueDate = '1900-01-01';
+	var tmpDueTime = '00:00';
+	for (var i=0; i<len; i++){
+		var homeworkDeadline = results.rows.item(i);
+		var result = isLate(homeworkDeadline.duedate, homeworkDeadline.duetime).toString();
+		
+		////alert('result: ' + result);
+		if ( result == "true" ){
+			////alert('append');	
+			$('#homeworkList').append('<li id = "'+homeworkDeadline.duedate+' '+homeworkDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+homeworkDeadline.id+'" data-transition = "slide">'+ homeworkDeadline.class + '<br>' + homeworkDeadline.duedate+'    '+ homeworkDeadline.duetime+'<br>'+ homeworkDeadline.description +'</a></li>');
+		} 
+		
+	}
+	
+	$("#homeworkList").listview().listview('refresh');
+	$('#homeworkList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
+    });
+	
+}
+
+
+function getTestDeadlines_success(tx, results){
+
+	var len = results.rows.length;
+	var tmpDueDate = '1900-01-01';
+	var tmpDueTime = '00:00';
+	//var s = "";
+	$('#testList').empty();
+	for (var i=0; i<len; i++){
+		var testDeadline = results.rows.item(i);
+		var result = isLate(testDeadline.duedate, testDeadline.duetime).toString();
+		if ( result == "true"){
+			$('#testList').append('<li id = "'+testDeadline.duedate+' '+testDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+testDeadline.id+'" data-transition = "slide">'+ testDeadline.class + '<br>' + testDeadline.duedate+'    '+ testDeadline.duetime+'<br>'+ testDeadline.description +'</a></li>');
+		}				
+	}
+	$(function(){
+	    var elems = $('#testList').children('li').remove();
+	    elems.sort(function(a,b){
+	    	//alert(new Date(a.id) < new Date(b.id));
+	        return (new Date(a.id) > new Date(b.id));
+	    });
+	    $('#testList').append(elems);
+	});
+	$("#testList").listview().listview('refresh');
+	$('#testList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
+    });
+>>>>>>> parent of 698eddb... Re order  all lists
 }
 
 function getFinishedDeadlines(tx) {

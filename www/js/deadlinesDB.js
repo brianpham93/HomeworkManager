@@ -26,7 +26,75 @@ function getDeadlinesList(tx) {
     tx.executeSql(sql3, [], getTestDeadlines_success);
 }
 
-function getAllDeadlines_success(tx, results) {
+function getAllDeadlines_success(tx, results){
+
+	var len = results.rows.length;
+	//var s = "";
+	$('#allList').empty();
+	var tmpDueDate = '1900-01-01';
+	var tmpDueTime = '00:00';
+	for (var i=0; i<len; i++){
+		var allDeadline = results.rows.item(i);
+		
+		var deadlineDatePart = allDeadline.duedate.split('-');
+		var deadlineTimePart = allDeadline.duetime.split(':');
+		
+		var newDate = new Date(deadlineDatePart[0], deadlineDatePart[1] - 1 , deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);			
+		var notiDate = new Date(newDate - 86400*1000);
+		//compare with current time
+		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
+		if ( result == "true"){			
+			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
+			// window.plugin.notification.local.add({
+			// 	id : getRandomInt(0,99999), 
+			//     message: 'Dont forget to complete: '+allDeadline.description+'',
+			//     badge: 0,
+			//     date: notiDate
+			// });
+		}
+	}
+    var elems = $('#allList').children('li').remove();
+
+    elems.sort(function(a,b){
+    	try{
+    		var aDateTimePart = a.id.split(" ");
+
+			var aDatePart = aDateTimePart[0].split("-");
+			var aTimePart = aDateTimePart[1].split(":");
+			// alert(aTimePart);
+
+			var aYear = parseInt(aDatePart[0]);
+			var aMonth = parseInt(aDatePart[1]) - 1;
+			var aDay = parseInt(aDatePart[2]);
+			var aHour = parseInt(aTimePart[0]);
+			var aMinute = parseInt(aTimePart[1]);
+			
+			var aDate = new Date(aYear,aMonth,aDay,aHour,aMinute,0,0);
+			
+			
+			var bDateTimePart = b.id.split(" ");
+			var bDatePart = bDateTimePart[0].split("-");
+			var bTimePart = bDateTimePart[1].split(":");
+			
+			var bYear = parseInt(bDatePart[0]);
+			var bMonth = parseInt(bDatePart[1]) - 1;
+			var bDay = parseInt(bDatePart[2]);
+			var bHour = parseInt(bTimePart[0]);
+			var bMinute = parseInt(bTimePart[1]);
+			
+			var bDate = new Date(bYear,bMonth,bDay,bHour,bMinute,0,0);
+			//alert(aDate + " is later than  " + bDate + " ? ");
+			//alert(aDate > bDate);
+			//alert(aDate > bDate);
+			if (aDate > bDate) return 1;
+  			if (aDate < bDate) return -1;
+  			return 0;
+			//return  aDate > bDate;
+
+    	} catch(err){
+    		alert(err.message);
+    	}
+    });
 
     var len = results.rows.length;
     //var s = "";
@@ -126,7 +194,6 @@ function getAllDeadlines_success(tx, results) {
 
 }
 
-
 function getHomeworkDeadlines_success(tx, results) {
 
     ////alert('get homework deadlines');
@@ -194,6 +261,34 @@ function getHomeworkDeadlines_success(tx, results) {
         } catch (err) {
             alert(err.message);
         }
+function getHomeworkDeadlines_success(tx, results){
+	
+	////alert('get homework deadlines');
+	var len = results.rows.length;
+	$('#homeworkList').empty();
+	var tmpDueDate = '1900-01-01';
+	var tmpDueTime = '00:00';
+	for (var i=0; i<len; i++){
+		var homeworkDeadline = results.rows.item(i);
+		var result = isLate(homeworkDeadline.duedate, homeworkDeadline.duetime).toString();
+		
+		////alert('result: ' + result);
+		if ( result == "true" ){
+			////alert('append');	
+			$('#homeworkList').append('<li id = "'+homeworkDeadline.duedate+' '+homeworkDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+homeworkDeadline.id+'" data-transition = "slide">'+ homeworkDeadline.class + '<br>' + homeworkDeadline.duedate+'    '+ homeworkDeadline.duetime+'<br>'+ homeworkDeadline.description +'</a></li>');
+		} 
+		
+	}
+	
+	$("#homeworkList").listview().listview('refresh');
+	$('#homeworkList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
     });
 
     $('#homeworkList')
@@ -216,7 +311,6 @@ function getHomeworkDeadlines_success(tx, results) {
         });
 
 }
-
 
 function getTestDeadlines_success(tx, results) {
 
@@ -292,6 +386,37 @@ function getTestDeadlines_success(tx, results) {
         } catch (err) {
             alert(err.message);
         }
+function getTestDeadlines_success(tx, results){
+
+	var len = results.rows.length;
+	var tmpDueDate = '1900-01-01';
+	var tmpDueTime = '00:00';
+	//var s = "";
+	$('#testList').empty();
+	for (var i=0; i<len; i++){
+		var testDeadline = results.rows.item(i);
+		var result = isLate(testDeadline.duedate, testDeadline.duetime).toString();
+		if ( result == "true"){
+			$('#testList').append('<li id = "'+testDeadline.duedate+' '+testDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+testDeadline.id+'" data-transition = "slide">'+ testDeadline.class + '<br>' + testDeadline.duedate+'    '+ testDeadline.duetime+'<br>'+ testDeadline.description +'</a></li>');
+		}				
+	}
+	$(function(){
+	    var elems = $('#testList').children('li').remove();
+	    elems.sort(function(a,b){
+	    	//alert(new Date(a.id) < new Date(b.id));
+	        return (new Date(a.id) > new Date(b.id));
+	    });
+	    $('#testList').append(elems);
+	});
+	$("#testList").listview().listview('refresh');
+	$('#testList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
     });
 
     $('#testList')
@@ -400,6 +525,20 @@ function getAllFinishedDeadlines_success(tx, results) {
             }
         });
 
+        $('#allFinishedList').prepend('<li><a href="#DeadlineDetail" id = "'+allFinishedDeadline.id+'" data-transition = "slide"><del>' + allFinishedDeadline.class + '<br>' + allFinishedDeadline.duedate + '  ' + allFinishedDeadline.duetime + '<br>' + allFinishedDeadline.description + '</del></a></li>');
+
+    }
+    $("#allFinishedList").listview().listview('refresh');
+	$('#allFinishedList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
+    });
+	
 }
 
 function getHomeworkFinishedDeadlines_success(tx, results) {
@@ -480,6 +619,19 @@ function getHomeworkFinishedDeadlines_success(tx, results) {
                 });
             }
         });
+        $('#homeworkFinishedList').prepend('<li><a href="#DeadlineDetail" id = "'+homeworkFinishedDeadline.id+'" data-transition = "slide"><del>' + homeworkFinishedDeadline.class + '<br>' + homeworkFinishedDeadline.duedate + '    ' + homeworkFinishedDeadline.duetime + '<br>' + homeworkFinishedDeadline.description + '</del></a></li>');
+
+    }
+    $("#homeworkFinishedList").listview().listview('refresh');
+	$('#homeworkFinishedList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
+    });
 }
 
 function getTestFinishedDeadlines_success(tx, results) {
@@ -560,6 +712,20 @@ function getTestFinishedDeadlines_success(tx, results) {
                 });
             }
         });
+=======
+        $('#testFinishedList').prepend('<li><a href="#DeadlineDetail" id = "'+testFinishedDeadline.id+'" data-transition = "slide"><del>' + testFinishedDeadline.class + '<br>' + testFinishedDeadline.duedate + '    ' + testFinishedDeadline.duetime + '<br>' + testFinishedDeadline.description + '</del></a></li>');
+
+    }
+    $("#testFinishedList").listview().listview('refresh');
+	$('#testFinishedList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
+    });
 }
 
 function getMissedDeadlines(tx) {
@@ -630,6 +796,26 @@ function getAllMissedDeadlines_success(tx, results) {
         } catch (err) {
             alert(err.message);
         }
+function getAllMissedDeadlines_success(tx, results){
+	var len = results.rows.length;
+	//var s = "";
+	$('#allMissedList').empty();
+	for (var i=0; i<len; i++){
+		var allMissedDeadline = results.rows.item(i);
+		var result = isLate(allMissedDeadline.duedate, allMissedDeadline.duetime).toString();
+		if ( result == "false"){
+			$('#allMissedList').prepend('<li><a href="#DeadlineDetail" id = "'+allMissedDeadline.id+'" data-transition = "slide">'+ allMissedDeadline.class +'<br>'+ allMissedDeadline.duedate+'  '+ allMissedDeadline.duetime+'<br>'+ allMissedDeadline.description +'</a></li>');
+		}
+	}
+	$("#allMissedList").listview().listview('refresh');
+	$('#allMissedList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
     });
     $('#allMissedList')
         .append(elems);
@@ -711,6 +897,29 @@ function getHomeworkMissedDeadlines_success(tx, results) {
         } catch (err) {
             alert(err.message);
         }
+function getHomeworkMissedDeadlines_success(tx, results){
+	
+	var len = results.rows.length;
+	$('#homeworkMissedList').empty();
+	for (var i=0; i<len; i++){
+		var homeworkMissedDeadline = results.rows.item(i);
+		var result = isLate(homeworkMissedDeadline.duedate, homeworkMissedDeadline.duetime).toString();
+		////alert('result: ' + result);
+		if ( result == "false" ){
+			////alert('append');				
+			$('#homeworkMissedList').prepend('<li><a href="#DeadlineDetail" id = "'+homeworkMissedDeadline.id+'" data-transition = "slide">'+ homeworkMissedDeadline.class + '<br>' + homeworkMissedDeadline.duedate+'    '+ homeworkMissedDeadline.duetime+'<br>'+ homeworkMissedDeadline.description +'</a></li>');
+		} 
+		else continue;;
+	}
+	$("#homeworkMissedList").listview().listview('refresh');
+	$('#homeworkMissedList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
     });
     $('#homeworkMissedList')
         .append(elems);
@@ -793,6 +1002,28 @@ function getTestMissedDeadlines_success(tx, results) {
         } catch (err) {
             alert(err.message);
         }
+
+function getTestMissedDeadlines_success(tx, results){
+
+	var len = results.rows.length;
+	//var s = "";
+	$('#testMissedList').empty();
+	for (var i=0; i<len; i++){
+		var testMissedDeadline = results.rows.item(i);
+		var result = isLate(testMissedDeadline.duedate, testMissedDeadline.duetime).toString();
+		if ( result == "false"){
+			$('#testMissedList').prepend('<li><a href="#DeadlineDetail" id = "'+testMissedDeadline.id+'" data-transition = "slide">'+ testMissedDeadline.class + '<br>' + testMissedDeadline.duedate+'    '+ testMissedDeadline.duetime+'<br>'+ testMissedDeadline.description +'</a></li>');
+		}		
+	}
+	$("#testMissedList").listview().listview('refresh');
+	$('#testMissedList').children().each(function(){
+                var anchor = $(this).find('a');
+                if(anchor){
+                    anchor.click(function(){
+						   //alert(anchor.attr('id'));
+                        sessionStorage.setItem("selectedId", anchor.attr('id'));
+                    });
+                }
     });
     $('#testMissedList')
         .append(elems);
