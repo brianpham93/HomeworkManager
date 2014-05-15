@@ -39,15 +39,15 @@ function getAllDeadlines_success(tx, results){
 		var notiDate = new Date(newDate - 86400*1000);
 		//compare with current time
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
-		if ( result == "true"){			
+		if (result == "true"){			
 			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+
 				allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ 
 				allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
 				//alert(allDeadline.id);
 				window.plugin.notification.local.add({
 					id : parseInt(allDeadline.id), 
-				    message: 'Dont forget to complete: '+allDeadline.description+''
-				    //date: notiDate
+				    message: 'Dont forget to complete: '+allDeadline.description+'',
+				    date: notiDate
 				});
 		}
 	}
@@ -845,7 +845,12 @@ function insertSuccessCB(){
 
 function deleteSuccessCB(tx){
 	//alert("Deleted successfully");
-	window.location.hash ="#deadlineList";
+	alert(id);
+	window.plugin.notification.local.cancel(parseInt(id), function () {
+    // The notification has been canceled
+	}, window.location.hash ="#deadlineList");
+	// window.plugin.notification.local.cancel(id);
+	// window.location.hash ="#deadlineList";
 }
 // External func
 function getParameterByName(name) {
