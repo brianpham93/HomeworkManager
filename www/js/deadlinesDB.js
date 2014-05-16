@@ -41,14 +41,24 @@ function getAllDeadlines_success(tx, results){
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
 		if ( result == "true"){			
 			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
-			window.plugin.notification.local.add({
-				id : getRandomInt(0,99999), 
-			    message: 'Dont forget to complete: '+allDeadline.description+'',
-			    badge: 0,
-			    date: notiDate
-			});
+			// window.plugin.notification.local.add({
+			// 	id : getRandomInt(0,99999), 
+			//     message: 'Dont forget to complete: '+allDeadline.description+'',
+			//     badge: 0,
+			//     date: notiDate
+			// });
 		}
 	}
+
+	$(function(){
+        var elems = $('#allList').children('li').remove();
+        elems.sort(function(a,b){
+            //alert(new Date(a.id) < new Date(b.id));
+            return (new Date(a.id) - new Date(b.id));
+        });
+
+        $('#allList').append(elems);
+    });
 	
 	$("#allList").listview().listview('refresh');
 	$('#allList').children().each(function(){

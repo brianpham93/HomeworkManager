@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deadlines</title>
+<link rel="stylesheet" href="css/jqm-demos.css">
+<link rel="stylesheet" href="css/jquery.mobile-1.4.2.min.css">
+<script src="js/jquery.js"></script>
+<script src="js/index.js"></script>
+<script src="js/jquery.mobile-1.4.2.min.js"></script>
+<script src="js/jquery.mobile.router.js"></script>
+<script src="js/deadlinesDB.js"></script>
+<script src="js/iscroll.js"></script>
+<script src="js/fastclick.js"></script>
+<script type="text/javascript">
+	window.addEventListener('load', function() {
+	    FastClick.attach(document.body);
+	}, false);
+</script>
+
+<script type="text/javascript">
+var panel = '<div id="mypanel" data-role="panel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a"><ul class="jqm-list ui-alt-icon ui-nodisc-icon list"><li data-filtertext="deadlines" data-icon="home"><a href="#deadlineList" data-transition = "slide">Deadlines</a></li><li data-filtertext="finished tasks"><a href="#finishedList" data-transition = "slide">Finished tasks</a></li><li data-filtertext="Missed tasks"><a href="#missedList" data-transition = "slide" >Missed tasks</a></li><li data-filtertext="Add new deadlines"><a href="#addNewDeadline" data-transition = "slide">Add new deadline</a></li><li data-filtertext="Class Manager"><a href="#classlistpage" data-transition = "slide" >Class management</a></li></ul></div>';
+
+$(document).one('pagebeforecreate', function () {
+    $.mobile.pageContainer.prepend(panel);
+    $("#mypanel").panel().enhanceWithin();
+});
+</script>
+<style id="inset-tablist">
+		.tablist-left {
+			width: 25%;
+			display: inline-block;
+		}
+		.tablist-content {
+			width: 60%;
+			display: inline-block;
+			vertical-align: top;
+			margin-left: 5%;
+		}
+</style>
+</head>
+<body>
+<div id="deadlineList" data-role="page" class="jqm-demos" data-quicklinks="true">
+	<!-- header -->
+	<div data-role="header" class="jqm-header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+		<h2>Deadlines</h2>
+		<a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<a href="#addNewDeadline" data-transition="slide" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-plus ui-btn-right">Add new</a>
+	</div>
+	<!-- /header -->
+    <!-- body -->
+	<div role="main" class="ui-content jqm-content" >
+		<div data-demo-html="true">
+			<div data-role="tabs" id="tabs">
+            	<!-- tab bar -->
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#all" data-ajax="false">All</a></li>
+						<li><a href="#homework" data-ajax="false">Homework</a></li>
+						<li><a href="#test" data-ajax="false">Test</a></li>
+					</ul>
+				</div>
+                <!-- tab bar -->
+                
+                <!-- tab content -->
+				<div id="all" class="ui-body-d ui-content">
+					<ul id="allList" data-role="listview" data-inset="true">
+                        
+						<!--List will go here-->
+					</ul>
+				</div>
+				<div id="homework" class="ui-body-d ui-content">
+					<ul id="homeworkList" data-role="listview" data-inset="true">					
+                    	<!--List will go here-->
+					</ul>
+				</div>
+				<div id="test" class="ui-body-d ui-content">
+					<ul id="testList" data-role="listview" data-inset="true">
+						<!--List will go here-->
+					</ul>
+				</div>
+             <!-- tab content -->
+			</div>
+		</div>
+	</div>
+	<!-- end tab content -->
+    <!-- left panel -->
+    <!-- end left panel -->
+ </div>	
+ 
+<div id="DeadlineDetail" data-role="page" class="jqm-demos" data-quicklinks="true">
+	<div data-role="header" class="jqm-header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+        <h2>Deadline Detail</h2>
+        <a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+        <button onClick="getFormInfo()" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-check ui-btn-right">Save</button>
+    </div>
+    <!-- end head -->
+    <div data-role="content" id="contentAddNewDeadline" class="ui-content" data-iscroll>
+    	
+    	<form id="formDeadlineInfo">
+        	<label for="shortDescription">Short Description</label>
+            <input id="shortDescription"  type="text">
+            <br>
+            <label for="class">Class</label>
+            <select id="class" class="ui-selectmenu" >
+           
+            </select>
+            <br>
+            <label for="dueDate">Due Date</label>
+            <input id="dueDate" type="date">
+            <br>
+            <label for="dueTime">Due Time</label>
+            <input id="dueTime" type="time">
+            <br>
+            <label for="type">Type</label>
+            <select id="type">
+              <option value="Homework">Homework</option>
+              <option value="Test">Test</option>
+            </select>
+            <br>
+            <label for="additionalInfo">Additional Info</label>
+            <input id="additionalInfo" type="text">
+            <br>
+            <label for="finished">Finished</label>
+            <select data-role="flipswitch" id="finished" class="ui-selectmenu" >
+              <option value="no" selected>no</option>
+              <option value="yes">yes</option>
+              
+            </select>
+            
+        </form>
+    </div>
+    <div data-role="footer" class="jqm-footer ui-footer-fixed" data-position="fixed" data-tap-toggle="false" data-transition="none">
+    	<button onClick="deleteDeadline()" class="ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-delete ui-btn-b ui-btn-icon-bottom">Delete</button>
+    </div>
+    <!-- end tab content -->
+    <!-- end left panel -->
+ 
+</div>
+
+<div id="finishedList" data-role="page" class="jqm-demos" data-quicklinks="true">
+<!--<script>
+	db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+	db.transaction(populateDB, errorCB, successCB);
+	db.transaction(getFinishedDeadlines, errorCB);
+</script>-->
+	<div data-role="header" class="jqm-header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+		<h2>Finished tasks</h2>
+		<a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<a href="#addNewDeadline" data-transition="slide" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-plus ui-btn-right">Add new</a>
+	</div>
+	<!-- /header -->
+	<div role="main" class="ui-content jqm-content" >
+		<div data-demo-html="true">
+			<div data-role="tabs" id="tabs">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#all" data-ajax="false">All</a></li>
+						<li><a href="#homework" data-ajax="false">Homework</a></li>
+						<li><a href="#test" data-ajax="false">Test</a></li>
+					</ul>
+				</div>
+             
+				<div id="all" class="ui-body-d ui-content">
+					<ul id="allFinishedList" data-role="listview" data-inset="true">
+						<!--List will go here-->
+					</ul>
+				</div>
+				<div id="homework" class="ui-body-d ui-content">
+					<ul id="homeworkFinishedList" data-role="listview" data-inset="true">					
+                    	<!--List will go here-->
+					</ul>
+				</div>
+				<div id="test" class="ui-body-d ui-content">
+					<ul id="testFinishedList" data-role="listview" data-inset="true">
+						<!--List will go here-->
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+ </div>
+ 
+ 
+<div id="missedList" data-role="page" class="jqm-demos" data-quicklinks="true">
+
+	<div data-role="header" class="jqm-header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+		<h2>Missed tasks</h2>
+		<a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<a href="#addNewDeadline" data-transition="slide" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-plus ui-btn-right">Add new</a>
+	</div>
+	<!-- /header -->
+	<div role="main" class="ui-content jqm-content" >
+		<div data-demo-html="true">
+			<div data-role="tabs" id="tabs">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#all" data-ajax="false">All</a></li>
+						<li><a href="#homework" data-ajax="false">Homework</a></li>
+						<li><a href="#test" data-ajax="false">Test</a></li>
+					</ul>
+				</div>
+             
+				<div id="all" class="ui-body-d ui-content">
+					<ul id="allMissedList" data-role="listview" data-inset="true">
+						<!--List will go here-->
+					</ul>
+				</div>
+				<div id="homework" class="ui-body-d ui-content">
+					<ul id="homeworkMissedList" data-role="listview" data-inset="true">					
+                    	<!--List will go here-->
+					</ul>
+				</div>
+				<div id="test" class="ui-body-d ui-content">
+					<ul id="testMissedList" data-role="listview" data-inset="true">
+						<!--List will go here-->
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+ </div>
+ 
+ <div id="addNewDeadline" data-role="page" class="jqm-demos" data-quicklinks="true">
+ 	<script>
+		db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+		db.transaction(populateDB, errorCB, successCB);
+		db.transaction(populateClassDB, errorCB, successCB);
+		db.transaction(getClasses, errorCB);
+    </script>
+	<div data-role="header" class="jqm-header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+        <h2>Add new deadlines</h2>
+        <a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+        <button onClick="saveDeadlineToDB()" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-check ui-btn-right">Save</button>
+    </div>
+    <!-- end head -->
+    <div id="contentAddNewDeadline" class="ui-content" data-iscroll>
+    	<form id="formDeadlineInfo">
+        	<label for="shortDescriptionAddNew">Short Description</label>
+            <input id="shortDescriptionAddNew"  type="text">
+            <br>
+            <label for="classAddNew">Class</label>
+            <select id="classAddNew" class="ui-selectmenu" >
+          
+            </select>
+            <br>
+            <label for="dueDateAddNew">Due Date</label>
+            <input id="dueDateAddNew" type="date">
+            <br>
+            <label for="dueTimeAddNew">Due Time</label>
+            <input id="dueTimeAddNew" type="time">
+            <br>
+            <label for="typeAddNew">Type</label>
+            <select id="typeAddNew">
+              <option value="Homework">Homework</option>
+              <option value="Test">Test</option>
+            </select>
+            <br>
+            <label for="additionalInfoAddNew">Additional Info</label>
+            <input id="additionalInfoAddNew" type="text">
+            <br>
+            <label for="finishedAddNew">Finished</label>
+            <select data-role="flipswitch" id="finishedAddNew" class="ui-selectmenu" >
+              <option value="no" selected>No</option>
+              <option value="yes">Yes</option>
+              
+            </select>
+
+        </form>
+    </div>
+</div>
+
+<div id="classlistpage" data-role="page" class="jqm-demos" data-quicklinks="true">
+	<div class="jqm-header ui-header" data-role="header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+        <h1>Class List</h1>
+        <a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+        <a href="#addNewClass" data-transition="slide" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-plus ui-btn-right">Save</a>
+    </div>
+	
+    <div id="content" class="jqm-content" data-role="content">
+    	<div class="ui-body-d ui-content">
+        	<ul id="classList" class="ui-listview" data-role="listview" data-inset="true">
+    
+        	</ul>
+        </div>
+    	
+    </div>
+</div>
+ 
+<div id="classDetail" data-role="page" class="jqm-demos" data-quicklinks="true">
+    <div id="headerClassDetail" class="jqm-header ui-header" data-role="header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+        <h1>Class Detail</h1>
+        <a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+       <button onClick="getClassFormInfo()" data-transition="slide" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-check ui-btn-right">Save</button>
+    </div>
+    <div id="content" data-role="content" data-iscroll class="ui-content jqm-content">
+        <label for="className">Name</label>
+        <input id="className" type="text" readonly>
+        <br>
+        <label for="classLocation">Location</label>
+        <input id="classLocation" type="text">
+        <br>
+        <label for="classDate">Class Date</label>
+        <select id = "classDate">
+                <option value = "Monday">Monday</option>
+                <option value = "Tuesday">Tuesday</option>
+                <option value = "Wednesday">Wednesday</option>
+                <option value = "Thursday">Thursday</option>
+                <option value = "Friday">Friday</option>
+                <option value = "Saturday">Saturday</option>
+                <option value = "Sunday">Sunday</option>
+        </select>
+        <!--<input id="classDate" type="text">-->
+        <br>
+        <label for="classTime">Class Time</label>
+        <input id="classTime" type="time">
+        <br>
+        <label for="classTeacher">Teacher</label>
+        <input id="classTeacher" type="text">
+        <br>
+        <label for="classTeacherEmail">Email</label>
+        <input id="classTeacherEmail" type="email">
+        <br>
+        <label for="classTeacherPhone">Phone</label>
+        <input id="classTeacherPhone" type="tel">
+        <br>
+     
+    </div>
+</div> 
+
+<div id="addNewClass" data-role="page" class="jqm-demos" data-quicklinks="true">
+	<div id="headerAddNewClass" class="jqm-header" data-role="header" data-position="fixed" data-tap-toggle="false" data-transition="none">
+        	<h1>Add new class</h1>
+        <a href="#mypanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<button onClick="saveClassToDB()" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-nodisc-icon ui-alt-icon ui-icon-check ui-btn-right">Save</button>
+        </div>
+        <div id="content" class="jqm-content" data-role="content">
+        	<label for="newClassName">Name</label>
+            <input id="newClassName" type="text" class="ui-input-text">
+            <br>
+            <label for="newClassLocation">Location</label>
+            <input id="newClassLocation" type="text" class="ui-input-text">
+            <br>
+            <label for="newClassDate">Class Date</label>
+            <select id = "newClassDate">
+                <option value = "Monday">Monday</option>
+                <option value = "Tuesday">Tuesday</option>
+                <option value = "Wednesday">Wednesday</option>
+                <option value = "Thursday">Thursday</option>
+                <option value = "Friday">Friday</option>
+                <option value = "Saturday">Saturday</option>
+                <option value = "Sunday">Sunday</option>
+            </select>
+            
+            <br>
+            <label for="newClassTime">Class Time</label>
+            <input id="newClassTime" type="time">
+            <br>
+            <label for="newClassTeacher">Teacher</label>
+            <input id="newClassTeacher" type="text">
+            <br>
+            <label for="newClassTeacherEmail">Email</label>
+            <input id="newClassTeacherEmail" type="email">
+            <br>
+            <label for="newClassTeacherPhone">Phone</label>
+            <input id="newClassTeacherPhone" type="tel">
+            <br>
+        </div>
+</div>
+ 
+<script>
+
+$("#deadlineList").on("pagebeforeshow", function(e, data){
+            db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+    
+            db.transaction(populateDB, errorCB, successCB);
+    
+            db.transaction(getDeadlinesList, errorCB);
+            $(function(){
+                var elems = $('#allList').children('li').remove();
+                elems.sort(function(a,b){
+                    //alert(new Date(a.id) < new Date(b.id));
+                    return (new Date(a.id) > new Date(b.id));
+                });
+
+                $('#allList').append(elems);
+            });
+            $("#allList").listview().listview('refresh');
+
+});
+
+$("#DeadlineDetail").on("pagebeforeshow", function(e, data){
+           db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+            db.transaction(populateClassDB, errorCB, successCB);
+            db.transaction(getClasses, errorCB);
+            db.transaction(getDeadlineDetail, errorCB); 
+        });
+        
+$("#classDetail").on("pagebeforeshow", function(e, data){
+           db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+            db.transaction(populateClassDB, errorCB, successCB);
+            db.transaction(getClassDetail, errorCB); 
+        });
+        
+
+$("#finishedList").on("pagebeforeshow", function(e, data){
+            
+           db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+            db.transaction(populateDB, errorCB, successCB);
+    
+            db.transaction(getFinishedDeadlines, errorCB);
+        });
+$("#missedList").on("pagebeforeshow", function(e, data){
+            
+           db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+            db.transaction(populateDB, errorCB, successCB);
+    
+            db.transaction(getMissedDeadlines, errorCB);
+        });
+$("#classlistpage").on("pagebeforeshow", function(e, data){
+            
+            db = window.openDatabase("HomeworkTracker3", "2.0", "HomeworkTracker3", 2000);
+            db.transaction(populateClassDB, errorCB, populateClassSuccessCB);
+            
+            db.transaction(getClasses, errorCB);
+        });
+
+</script>
+<script type="text/javascript" src ="cordova.js"></script>
+<script type="text/javascript" src ="js/local-notification.js"></script>
+</body>
+
+</html>

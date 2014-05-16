@@ -1,0 +1,30 @@
+<html>
+<head>
+	<title></title>
+</head>
+<script type="text/javascript" src="js/jquery.js"></script>
+<body>
+	<ul id="test">
+	    <li id="2014-05-16 10:00">blub</li>
+	    <li id="2014-05-15 9:00">blaaah</li>
+	    <li id="2014-05-16 9:00">hmmmm</li>
+	    <li id="2014-05-15 10:00">one more</li>
+	</ul>
+	<script type="text/javascript">
+		$(function(){
+		    var elems = $('#test').children('li').remove();
+		    elems.sort(function(a,b){
+		    	//alert(new Date(a.id) < new Date(b.id));
+		        return (new Date(a.id) > new Date(b.id));
+		    });
+		    $('#test').append(elems);
+		});
+		// $(function(){
+  //   		var elems = $('#test').children('li').remove();
+  //   		elems.sort(function(a,b){
+  //       		alert(new Date(a.id) < new Date(b.id));        
+  //   		});
+		// }
+	</script>
+</body>
+</html>
