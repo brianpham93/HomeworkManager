@@ -1,31 +1,30 @@
-$(function(){
-    var elems = $('#test').children('li').remove();
-    elems.sort(function(a,b){
-        var aId = parseInt(a.id);
-        var bId = parseInt(b.id);
-        
-        var aPart = aId.split(" ");
-        var aPartDate = aPart[0].split("-");
-        var aPartTime = aPart[1].split(":");
-        
-        var bPart = bId.split(" ");
-        var bPartDate = bPart[0].split("-");
-        var bPartTime = bPart[1].split(":");
-        
-        if ( aPartDate[0] < bPartDate[0] ){// previous year
-		  return parseInt(a.id) > parseInt(b.id);
-    	} else if ( ( frstDeadlinePart[0] == scndDeadlinePart[0] ) && ( frstDeadlinePart[1] < scndDeadlinePart[1])){ // previous month
-    		return false;
-    	} else if ( ( frstDeadlinePart[0] == scndDeadlinePart[0] ) && ( frstDeadlinePart[1] == scndDeadlinePart[1]) && (frstDeadlinePart[2] < scndDeadlinePart[2])){// previous date
-    		return false;
-    	} else if ( ( frstDeadlinePart[0] == scndDeadlinePart[0] ) && ( frstDeadlinePart[1] == scndDeadlinePart[1]) && (frstDeadlinePart[2] == scndDeadlinePart[2]) && (frstDeadlineTime[0] < scndDeadlineTime[0])){ // previous hour
-    		return  false;
-    	} else if ( ( frstDeadlinePart[0] == scndDeadlinePart[0] ) && ( frstDeadlinePart[1] == scndDeadlinePart[1]) && (frstDeadlinePart[2] == scndDeadlinePart[2]) && (frstDeadlineTime[0] == scndDeadlineTime[0]) && (frstDeadlineTime[1] < scndDeadlineTime[1])) { // previous minute
-    		return false;
-    	} else {
-    		return true;
-    	}	
-            return parseInt(a.id) > parseInt(b.id);
-        });
-    $('#test').append(elems);
-});
+var aDateTimePart = a.id.split(" ");
+
+var aDatePart = aDateTimePart[0].split("-");
+var aTimePart = aDateTimePart[1].split(":");
+
+var aYear = aDatePart[0];
+var aMonth = aDatePart[1];
+var aDay = aDatePart[2];
+
+var aHour = aTimePart[0];
+var aMinute = aTimePart[1];
+
+var bDateTimePart = b.id.split(" ");
+
+var bDatePart = bDateTimePart[0].split("-");
+var bTimePart = bDateTimePart[1].split(":");
+
+var bYear = bDatePart[0];
+var bMonth = bDatePart[1];
+var bDay = bDatePart[2];
+
+var bHour = bTimePart[0];
+var bMinute = bTimePart[1];
+
+var aDate = new Day(aYear,aMonth,aDate,aHour,aMinute,0,0);
+var bDate = new Day(aYear,aMonth,aDate,aHour,aMinute,0,0);
+
+return (new Date(aDate) > new Date(bDate));
+
+
