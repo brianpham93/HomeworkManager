@@ -36,7 +36,9 @@ function getAllDeadlines_success(tx, results){
 		var deadlineTimePart = allDeadline.duetime.split(':');
 		
 		var newDate = new Date(deadlineDatePart[0], deadlineDatePart[1] - 1 , deadlineDatePart[2], deadlineTimePart[0], deadlineTimePart[1], 0, 0);			
+		//alert(newDate);
 		var notiDate = new Date(newDate - 86400*1000);
+		//alert(newDate + " " +notiDate);
 		//compare with current time
 		var result = isLate(allDeadline.duedate, allDeadline.duetime).toString();
 <<<<<<< HEAD
@@ -62,14 +64,12 @@ function getAllDeadlines_success(tx, results){
     });
 =======
 		if (result == "true"){			
-			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+
-				allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+ 
-				allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
+			$('#allList').append('<li id = "'+allDeadline.duedate+' '+allDeadline.duetime+'"><a href="#DeadlineDetail" id = "'+allDeadline.id+'" data-transition = "slide">'+ allDeadline.class +'<br>'+ allDeadline.duedate+'  '+allDeadline.duetime+'<br>'+ allDeadline.description +'</a></li>');
 				//alert(allDeadline.id);
 				window.plugin.notification.local.add({
 					id : parseInt(allDeadline.id), 
-				    message: 'Dont forget to complete: '+allDeadline.description+'',
-				    date: notiDate
+				    message: 'Dont forget to complete: '+allDeadline.description+'',				    
+    				date:    notiDate
 				});
 		}
 	}
@@ -868,7 +868,7 @@ function insertSuccessCB(){
 
 function deleteSuccessCB(tx){
 	//alert("Deleted successfully");
-	alert(id);
+	//alert(id);
 	// window.plugin.notification.local.cancel(parseInt(id), function () {
  //    // The notification has been canceled
 	// }, window.location.hash ="#deadlineList");
